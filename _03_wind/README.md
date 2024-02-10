@@ -1,4 +1,4 @@
-# Particle forces 02: Gravity
+# Particle forces 03: Wind
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
@@ -12,39 +12,54 @@
 
 ## Lesson notes
 
-### 01 - Velocity changes position, acceleration changes velocity
+### 01 - Spout
 
-1. The code is already built to handle acceleration, whether speeding up or slowing down (in physics, both are called _acceleration_, not just going faster)
-2. In <code>particles.js</code>, add a new setting:
+1. In <code>index.js</code>, change the <code>init</code> function:
     ```js
-    const gravity = 0.15;
-    ```
-3. In the <code>update</code> function, point out the one-line change, <code>p.vy += gravity * dt;</code>:
-    ```js
-    export function update(dt = 1) {
-        //update particles
-        for (let i=0; i<particles.length; i++) {
-            let p = particles[i];
-            //not alive? needs removing or respawning?
-            if (p.life <= 0) {
-                if (particles.length > numParticles) {
-                    particles.splice(i, 1);
-                    i--;
-                }
-                else if (respawn) resetParticle(p);
-                continue;
-            }
-            //move and accelerate, change opacity, life
-            p.x += p.vx * dt;
-            p.y += p.vy * dt;
-            p.vx *= acceleration * dt;
-            p.vy *= acceleration * dt;
-            p.vy += gravity * dt;
-            p.opacity *= acceleration * dt;
-            p.life--;
-        }
+    function init() {
+        setRespawn(true);
+        setEmitter({ x: canvas.width/2, y: canvas.height });
+        // canvas.addEventListener("click", setEmitter);
+        update(canvas);
+        requestAnimationFrame(loop);
     }
     ```
-    * In this code, the <code>acceleration</code> setting is less than one, so it's actually slowing down both the axis velocities. In real-world physics, this might represent something like _friction_. These physics simulations are nothing like real-world physics, however, we can still think of this slow-down as a form of friction
-    * The <code>gravity</code> setting value is added to the <code>vy</code> vertical velocity property on each frame, which increases the movement toward the bottom of the canvas. For particles that start with a negative <code>vy</code> value, starting by shooting upwards toward the top of the canvas, the <code>gravity</code> value eventually increases <code>vy</code> to zero (or near it), which is the apex of the particle's arcing path, before accelerating it downward
-4. Running the code at this time produces a burst of particles that fall downward toward the bottom of the canvas
+    * Comment out the click event listener; this will be repurposed later
+    * Set the <code>respawn</code> property to <code>true</code> with the <code>setRespawn</code> function
+    * Set the emitter spawn point to the center-bottom of the canvas with the <code>setEmitter</code> function
+2. Running the code at this time produces a kind of bubbling effect at the very bottom of the canvas that burst upwards then down again as if from gravity. Most of the particles, however, only exist below the canvas
+3. In <code>particles.js</code>, add <code>HALF_PI</code> to the dependencies:
+    ```js
+    import { lerp, polarToCartesian, HALF_PI } from "./lib.js";
+    ```
+4. Point out the changes in the "settings" section:
+    ```js
+    const minRadius = 1;
+    const maxRadius = 3;
+    const minSpeed = 15;
+    const maxSpeed = 25;
+    const minAngle = -HALF_PI;
+    const maxAngle = -HALF_PI;
+    ```
+    * The min and max radii and speed have changed
+    * Two new settings, <code>minAngle</code> and <code>maxAngle</code> have the exact same value
+5. In the <code>getParticle</code> function, change the line that assigns the <code>angle</code> variable:
+    ```js
+    const angle = lerp(minAngle, maxAngle, Math.random());
+    ```
+    The <code>lerp</code> function uses the new <code>minAngle</code> and <code>maxAngle</code> settings
+6. Running the code at this time produces an upward stream of particles that shoots straight upwards before falling straight downwards. Point out, if necessary, that <code>-HALF_PI</code> radians is an "upward" direction in computer graphics
+7. In <code>lib.js</code>, add another constant:
+    ```js
+    export const QUARTER_PI = Math.PI * 0.25;
+    ```
+8. Back in <code>particle.js</code>, add <code>QUARTER_PI</code> to the dependencies:
+    ```js
+
+    ```
+9. Change the min and max angle settings:
+    ```js
+    const minAngle = -HALF_PI - QUARTER_PI;
+    const maxAngle = -HALF_PI + QUARTER_PI;
+    ```
+10. Running the code at this time produces a cone of particles spraying upwards before falling downwards. Explore different angle and speed settings

@@ -1,12 +1,14 @@
 //dependencies
-import { lerp, TWO_PI, polarToCartesian } from "./lib.js";
+import { lerp, polarToCartesian, TWO_PI, HALF_PI, QUARTER_PI } from "./lib.js";
 
 //settings
 const numParticles = 250;
-const minRadius = 2;
-const maxRadius = 5;
-const minSpeed = 2;
-const maxSpeed = 5;
+const minRadius = 1;
+const maxRadius = 3;
+const minSpeed = 15;
+const maxSpeed = 25;
+const minAngle = -HALF_PI - QUARTER_PI;
+const maxAngle = -HALF_PI + QUARTER_PI;
 const acceleration = 0.98;
 const opacity = 1;
 const minLife = 75;
@@ -36,7 +38,7 @@ function getParticleFromPool() {
 }
 
 function getParticle() {
-    const angle = lerp(0, TWO_PI, Math.random());
+    const angle = lerp(minAngle, maxAngle, Math.random());
     const speed = lerp(minSpeed, maxSpeed, Math.random());
     const { x: vx, y: vy } = polarToCartesian({ a: angle, v: speed });
     const { x, y } = emitter;
