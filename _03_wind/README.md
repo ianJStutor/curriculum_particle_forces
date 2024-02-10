@@ -63,3 +63,7 @@
     const maxAngle = -HALF_PI + QUARTER_PI;
     ```
 10. Running the code at this time produces a cone of particles spraying upwards before falling downwards. Explore different angle and speed settings
+
+### 02 - Gale force
+
+1. 

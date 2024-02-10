@@ -15,11 +15,14 @@ const minLife = 75;
 const maxLife = 125;
 const color = "white";
 const gravity = 0.15;
+const minWind = -3;
+const maxWind = 3;
 
 //state variables
 const particles = [];
 const emitter = { x: undefined, y: undefined };
 let respawn = false;
+let wind = 0;
 
 //setup
 function setupParticles() {
@@ -77,6 +80,10 @@ export function setRespawn(bool = true) {
     respawn = bool;
 }
 
+export function setWind(norm) {
+    wind = lerp(minWind, maxWind, norm);
+}
+
 //loop functions
 export function update(dt = 1) {
     //update particles
@@ -95,6 +102,7 @@ export function update(dt = 1) {
         p.x += p.vx * dt;
         p.y += p.vy * dt;
         p.vx *= acceleration * dt;
+        p.vx += wind * dt;
         p.vy *= acceleration * dt;
         p.vy += gravity * dt;
         p.opacity *= acceleration * dt;
