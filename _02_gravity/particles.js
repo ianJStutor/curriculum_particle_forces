@@ -12,6 +12,7 @@ const opacity = 1;
 const minLife = 75;
 const maxLife = 125;
 const color = "white";
+const gravity = 0.15;
 
 //state variables
 const particles = [];
@@ -93,6 +94,7 @@ export function update(dt = 1) {
         p.y += p.vy * dt;
         p.vx *= acceleration * dt;
         p.vy *= acceleration * dt;
+        p.vy += gravity * dt;
         p.opacity *= acceleration * dt;
         p.life--;
     }
