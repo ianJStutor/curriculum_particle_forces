@@ -15,8 +15,8 @@ const minLife = 75;
 const maxLife = 125;
 const color = "white";
 const gravity = 0.15;
-const minWind = -3;
-const maxWind = 3;
+const minWind = -2;
+const maxWind = 2;
 
 //state variables
 const particles = [];

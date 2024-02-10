@@ -66,4 +66,61 @@
 
 ### 02 - Gale force
 
-1. 
+1. In <code>particles.js</code>, add two new settings:
+    ```js
+    const minWind = -2;
+    const maxWind = 2;
+    ```
+    These numbers represent horizontal acceleration. Negative values will move particles to the left and positive values will move particles to the right
+2. Add a new state variable:
+    ```js
+    let wind = 0;
+    ```
+    This is the default value, no horizontal acceleration
+3. Add a new function to the "exported state functions" section:
+    ```js
+    export function setWind(norm) {
+        wind = lerp(minWind, maxWind, norm);
+    }
+    ```
+    Given a normalized value (between zero and one), the <code>wind</code> variable will be set between <code>minWind</code> and <code>maxWind</code>
+4. In the <code>update</code> function, add the new line <code>p.vx += wind * dt;</code>:
+    ```js
+    export function update(dt = 1) {
+        //update particles
+        for (let i=0; i<particles.length; i++) {
+            let p = particles[i];
+            //not alive? needs removing or respawning?
+            if (p.life <= 0) {
+                if (particles.length > numParticles) {
+                    particles.splice(i, 1);
+                    i--;
+                }
+                else if (respawn) resetParticle(p);
+                continue;
+            }
+            //move and accelerate, change opacity, life
+            p.x += p.vx * dt;
+            p.y += p.vy * dt;
+            p.vx *= acceleration * dt;
+            p.vx += wind * dt;
+            p.vy *= acceleration * dt;
+            p.vy += gravity * dt;
+            p.opacity *= acceleration * dt;
+            p.life--;
+        }
+    }
+    ```
+    This works identically to <code>gravity</code> but on the horizontal axis
+5. In the <code>index.js</code> file, add the new <code>setWind</code> function to the list of dependencies:
+    ```js
+    import { update, draw, setEmitter, hasLiveParticle, setRespawn, setWind } from "./particles.js";
+    ```
+6. In the <code>init</code> function, replace the commented-out click event handler with the following:
+    ```js
+    canvas.addEventListener("click", e => {
+        setWind(e.x / canvas.width);
+    });
+    ```
+    Dividing the click event's <code>x</code> position by the width produces a normalized value which is then sent to the <code>setWind</code> function
+7. Running the code at this time produces the familiar upward plume of particles. But clicking around the canvas introduces acceleration on the horizontal axis, representing wind (or some such force). Consider changing the <code>click</code> event to <code>pointermove</code> (if there's a mouse or other pointer device), or rewriting a bit to accomodate <code>touchmove</code>
