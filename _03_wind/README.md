@@ -123,4 +123,5 @@
     });
     ```
     Dividing the click event's <code>x</code> position by the width produces a normalized value which is then sent to the <code>setWind</code> function
-7. Running the code at this time produces the familiar upward plume of particles. But clicking around the canvas introduces acceleration on the horizontal axis, representing wind (or some such force). Consider changing the <code>click</code> event to <code>pointermove</code> (if there's a mouse or other pointer device), or rewriting a bit to accomodate <code>touchmove</code>
+7. Running the code at this time produces the familiar upward plume of particles. But clicking around the canvas introduces acceleration on the horizontal axis, representing wind (or some such force). Clicks closer to the left or right edges of the canvas produce a larger wind effect
+8. Consider changing the <code>click</code> event to <code>pointermove</code> (if there's a mouse or other pointer device), or rewriting a bit to accomodate <code>touchmove</code>
