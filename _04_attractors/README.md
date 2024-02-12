@@ -15,4 +15,56 @@
 ### 01 - Acceleration adjustment
 
 1. In the previous lesson, you added gravity and wind in the form of single values, each affecting a different axis acceleration. If we made these forces, and any future ones, always have values for both axes, then we wouldn't need to be stuck with the idea that gravity is always "down" (positive <code>vy</code>) or wind is always "horizontal" (positive or negative <code>vx</code>). Instead, we could assign gravity as <code>{x: 0, y: 0.15}</code> or wind as <code>{x: -1.5, y: 0}</code> or any other affector of acceleration (such as magnetism or being "like a moth drawn to a flame") in terms of an <code>{x,y}</code> object
-2. 
+2. In <code>particles.js</code>, redefine the <code>gravity</code> setting:
+    ```js
+    const gravity = {x: 0, y: 0.15};
+    ```
+    And redefine the default <code>wind</code> state variable:
+    ```js
+    let wind = {x: 0, y: 0};
+    ```
+3. Edit the <code>setWind</code> function:
+    ```js
+    export function setWind(norm) {
+        wind = {x: lerp(minWind, maxWind, norm), y: 0};
+    }
+    ```
+4. Create a new "state functions" section and move the <code>getParticleFromPool</code> and <code>resetParticle</code> functions to it. We're starting to get a bit more complicated now and might soon consider breaking code into separate files somehow
+5. In the "state functions" section, add a new function:
+    ```js
+    function addForce(p, force) {
+        p.vx += force.x;
+        p.vy += force.y;
+    }
+    ```
+    Given a particle and a force object with <code>x</code> and <code>y</code> properties, we can change the particle's axis velocities at will
+6. The <code>update</code> function has been altered:
+    ```js
+    export function update(dt = 1) {
+        //update particles
+        for (let i=0; i<particles.length; i++) {
+            let p = particles[i];
+            //not alive? needs removing or respawning?
+            if (p.life <= 0) {
+                if (particles.length > numParticles) {
+                    particles.splice(i, 1);
+                    i--;
+                }
+                else if (respawn) resetParticle(p);
+                continue;
+            }
+            //move and accelerate, change opacity, life
+            addForce(p, gravity);
+            addForce(p, wind);
+            p.vx *= acceleration * dt;
+            p.vy *= acceleration * dt;
+            p.x += p.vx;
+            p.y += p.vy;
+            p.opacity *= acceleration * dt;
+            p.life--;
+        }
+    }
+    ```
+    * All the acceleration calculations are now done first for each particle. Gravity and wind forces are added to the particle's axis velocities, which are afterwards multiplied by the <code>acceleration</code> and <code>dt</code> values
+    * Once the axis velocities have been calculated, the particle's position can be changed. Point out that delta time is applied only once. We're starting to get better control over the particle system
+7. Running the code at this time should produce no visible change to the lawn sprinkler effect produced in the previous step. The code underneath it all, however, has changed, and it now allows us greater control over our particles

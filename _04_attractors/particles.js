@@ -14,7 +14,7 @@ const opacity = 1;
 const minLife = 75;
 const maxLife = 125;
 const color = "white";
-const gravity = 0.15;
+const gravity = {x: 0, y: 0.15};
 const minWind = -2;
 const maxWind = 2;
 
@@ -22,7 +22,7 @@ const maxWind = 2;
 const particles = [];
 const emitter = { x: undefined, y: undefined };
 let respawn = false;
-let wind = 0;
+let wind = {x: 0, y: 0};
 
 //setup
 function setupParticles() {
@@ -31,13 +31,6 @@ function setupParticles() {
         if (p) resetParticle(p);
         else particles.push(getParticle());
     }
-}
-
-function getParticleFromPool() {
-    for (let p of particles) {
-        if (p.life <= 0) return p;
-    }
-    return null;
 }
 
 function getParticle() {
@@ -50,6 +43,15 @@ function getParticle() {
     return { x, y, vx, vy, r, opacity, color, life };
 }
 
+//state functions
+
+function getParticleFromPool() {
+    for (let p of particles) {
+        if (p.life <= 0) return p;
+    }
+    return null;
+}
+
 function resetParticle(p) {
     const { x, y, vx, vy, r, opacity, color, life } = getParticle();
     p.x = x;
@@ -60,6 +62,11 @@ function resetParticle(p) {
     p.opacity = opacity;
     p.color = color;
     p.life = life;
+}
+
+function addForce(p, force) {
+    p.vx += force.x;
+    p.vy += force.y;
 }
 
 //exported state functions
@@ -81,7 +88,7 @@ export function setRespawn(bool = true) {
 }
 
 export function setWind(norm) {
-    wind = lerp(minWind, maxWind, norm);
+    wind = {x: lerp(minWind, maxWind, norm), y: 0};
 }
 
 //loop functions
@@ -99,12 +106,12 @@ export function update(dt = 1) {
             continue;
         }
         //move and accelerate, change opacity, life
-        p.x += p.vx * dt;
-        p.y += p.vy * dt;
+        addForce(p, gravity);
+        addForce(p, wind);
         p.vx *= acceleration * dt;
-        p.vx += wind * dt;
         p.vy *= acceleration * dt;
-        p.vy += gravity * dt;
+        p.x += p.vx;
+        p.y += p.vy;
         p.opacity *= acceleration * dt;
         p.life--;
     }

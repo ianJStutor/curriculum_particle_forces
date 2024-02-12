@@ -12,7 +12,7 @@
 
 ## Lesson notes
 
-### 01 - Spout
+### 01 - Lawn sprinkler
 
 1. In <code>index.js</code>, change the <code>init</code> function:
     ```js
