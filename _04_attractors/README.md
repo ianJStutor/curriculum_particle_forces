@@ -68,3 +68,5 @@
     * All the acceleration calculations are now done first for each particle. Gravity and wind forces are added to the particle's axis velocities, which are afterwards multiplied by the <code>acceleration</code> and <code>dt</code> values
     * Once the axis velocities have been calculated, the particle's position can be changed. Point out that delta time is applied only once. We're starting to get better control over the particle system
 7. Running the code at this time should produce no visible change to the lawn sprinkler effect produced in the previous step. The code underneath it all, however, has changed, and it now allows us greater control over our particles
+
+### 02 - Wind and gravity with a single click!
