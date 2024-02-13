@@ -1,6 +1,6 @@
 //dependencies
 import { fullscreenCanvas } from "./fullscreenCanvas.js";
-import { update, draw, setEmitter, hasLiveParticle, setRespawn, setWind } from "./particles.js";
+import { update, draw, setEmitter, hasLiveParticle, setRespawn, setForce } from "./particles.js"; /////////////////////
 
 //environment
 const canvas = document.querySelector("canvas");
@@ -36,7 +36,7 @@ function init() {
     setRespawn(true);
     setEmitter({ x: canvas.width/2, y: canvas.height });
     canvas.addEventListener("click", e => {
-        setWind(e.x / canvas.width);
+        setForcePoint(e.x / canvas.width, e.y / canvas.height);
     });
     update(canvas);
     requestAnimationFrame(loop);

@@ -90,11 +90,11 @@ export function update(dt = 1) {
             continue;
         }
         //move and accelerate, change opacity, life
-        p.x += p.vx * dt;
-        p.y += p.vy * dt;
+        p.vy += gravity;        
         p.vx *= acceleration * dt;
         p.vy *= acceleration * dt;
-        p.vy += gravity * dt;
+        p.x += p.vx;
+        p.y += p.vy;
         p.opacity *= acceleration * dt;
         p.life--;
     }
