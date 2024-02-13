@@ -35,16 +35,17 @@
                 continue;
             }
             //move and accelerate, change opacity, life
-            p.x += p.vx * dt;
-            p.y += p.vy * dt;
+            p.vy += gravity;        
             p.vx *= acceleration * dt;
             p.vy *= acceleration * dt;
-            p.vy += gravity * dt;
+            p.x += p.vx;
+            p.y += p.vy;
             p.opacity *= acceleration * dt;
             p.life--;
         }
     }
     ```
+    * Point out that gravity is added to velocity first, then the acceleration and delta time are multiplied, and only then is the position changed for each particle
     * In this code, the <code>acceleration</code> setting is less than one, so it's actually slowing down both the axis velocities. In real-world physics, this might represent something like _friction_. These physics simulations are nothing like real-world physics, however, we can still think of this slow-down as a form of friction
     * The <code>gravity</code> setting value is added to the <code>vy</code> vertical velocity property on each frame, which increases the movement toward the bottom of the canvas. For particles that start with a negative <code>vy</code> value, starting by shooting upwards toward the top of the canvas, the <code>gravity</code> value eventually increases <code>vy</code> to zero (or near it), which is the apex of the particle's arcing path, before accelerating it downward
 4. Running the code at this time produces a burst of particles that fall downward toward the bottom of the canvas
