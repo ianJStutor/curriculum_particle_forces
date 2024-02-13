@@ -95,3 +95,13 @@
         setAttractor(e.touches[0].clientX, e.touches[0].clientY);
     });
     ```
+
+### 02 - Strange attractors
+
+??????
+
+    ```js
+    // OPTIONAL:
+    canvas.addEventListener("pointerdown", setEmitter);
+    canvas.addEventListener("pointerup", setAttractor);
+    ```

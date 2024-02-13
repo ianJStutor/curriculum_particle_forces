@@ -34,9 +34,12 @@ function loop(t) {
 //init
 function init() {
     setRespawn(true);
-    setEmitter({ x: canvas.width/2, y: canvas.height });
-    setAttractor({ x: canvas.width/2, y: 0 });
-    canvas.addEventListener("click", setAttractor);
+    setEmitter({ x: canvas.width/2, y: canvas.height/2 });
+    setAttractor({ x: canvas.width/2, y: canvas.height/2 });
+    canvas.addEventListener("click", e => {
+        setAttractor(e);
+        setEmitter(e);
+    });
     update(canvas);
     requestAnimationFrame(loop);
 }
