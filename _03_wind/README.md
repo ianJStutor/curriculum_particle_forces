@@ -30,7 +30,7 @@
 2. Running the code at this time produces a kind of bubbling effect at the very bottom of the canvas that burst upwards then down again as if from gravity. Most of the particles, however, only exist below the canvas
 3. In <code>particles.js</code>, add <code>HALF_PI</code> to the dependencies:
     ```js
-    import { lerp, polarToCartesian, HALF_PI } from "./lib.js";
+    import { lerp, polarToCartesian, TWO_PI, HALF_PI } from "./lib.js";
     ```
 4. Point out the changes in the "settings" section:
     ```js
@@ -42,7 +42,7 @@
     const maxAngle = -HALF_PI;
     ```
     * The min and max radii and speed have changed
-    * Two new settings, <code>minAngle</code> and <code>maxAngle</code> have the exact same value
+    * Two new settings, <code>minAngle</code> and <code>maxAngle</code> have the exact same value.
 5. In the <code>getParticle</code> function, change the line that assigns the <code>angle</code> variable:
     ```js
     const angle = lerp(minAngle, maxAngle, Math.random());
@@ -55,14 +55,14 @@
     ```
 8. Back in <code>particle.js</code>, add <code>QUARTER_PI</code> to the dependencies:
     ```js
-
+    import { lerp, polarToCartesian, TWO_PI, HALF_PI, QUARTER_PI } from "./lib.js";
     ```
 9. Change the min and max angle settings:
     ```js
     const minAngle = -HALF_PI - QUARTER_PI;
     const maxAngle = -HALF_PI + QUARTER_PI;
     ```
-10. Running the code at this time produces a cone of particles spraying upwards before falling downwards. Explore different angle and speed settings
+10. Running the code at this time produces a cone of particles spraying upwards before falling downwards, sort of like a lawn sprinkler. Explore different angle and speed settings
 
 ### 02 - Gale force
 
@@ -79,7 +79,7 @@
     This is the default value, no horizontal acceleration
 3. Add a new function to the "exported state functions" section:
     ```js
-    export function setWind(norm) {
+    export function addWind(norm) {
         wind = lerp(minWind, maxWind, norm);
     }
     ```
@@ -100,28 +100,34 @@
                 continue;
             }
             //move and accelerate, change opacity, life
-            p.x += p.vx * dt;
-            p.y += p.vy * dt;
+            p.vx += wind;
+            p.vy += gravity;
             p.vx *= acceleration * dt;
-            p.vx += wind * dt;
             p.vy *= acceleration * dt;
-            p.vy += gravity * dt;
+            p.x += p.vx;
+            p.y += p.vy;
             p.opacity *= acceleration * dt;
             p.life--;
         }
     }
     ```
     This works identically to <code>gravity</code> but on the horizontal axis
-5. In the <code>index.js</code> file, add the new <code>setWind</code> function to the list of dependencies:
+5. In the <code>index.js</code> file, add the new <code>addWind</code> function to the list of dependencies:
     ```js
-    import { update, draw, setEmitter, hasLiveParticle, setRespawn, setWind } from "./particles.js";
+    import { update, draw, setEmitter, hasLiveParticle, setRespawn, addWind } from "./particles.js";
     ```
 6. In the <code>init</code> function, replace the commented-out click event handler with the following:
     ```js
     canvas.addEventListener("click", e => {
-        setWind(e.x / canvas.width);
+        addWind(e.x / canvas.width);
     });
     ```
-    Dividing the click event's <code>x</code> position by the width produces a normalized value which is then sent to the <code>setWind</code> function
+    Dividing the click event's <code>x</code> position by the canvas's <code>width</code> property produces a normalized value which is then sent to the <code>addWind</code> function
 7. Running the code at this time produces the familiar upward plume of particles. But clicking around the canvas introduces acceleration on the horizontal axis, representing wind (or some such force). Clicks closer to the left or right edges of the canvas produce a larger wind effect
-8. Consider changing the <code>click</code> event to <code>pointermove</code> (if there's a mouse or other pointer device), or rewriting a bit to accomodate <code>touchmove</code>
+8. Consider changing the <code>click</code> event to <code>pointermove</code> (if there's a mouse or other pointer device), or rewriting a bit to accomodate <code>touchmove</code>:
+    ```js
+    // OPTIONAL:
+    canvas.addEventListener("touchmove", e => {
+        addWind(e.touches[0].clientX / canvas.width);
+    });
+    ```

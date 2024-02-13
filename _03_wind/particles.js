@@ -103,8 +103,8 @@ export function update(dt = 1) {
         p.vy += gravity;
         p.vx *= acceleration * dt;
         p.vy *= acceleration * dt;
-        p.x += p.vx * dt;
-        p.y += p.vy * dt;
+        p.x += p.vx;
+        p.y += p.vy;
         p.opacity *= acceleration * dt;
         p.life--;
     }
