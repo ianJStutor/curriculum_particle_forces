@@ -63,3 +63,6 @@
 5. Running the code at this time should produce no visible change to the lawn sprinkler effect produced in the previous step. The code underneath it all, however, has changed, and it now allows us greater control over our particles
 
 ### 02 - Wind and gravity with a single click!
+
+1. Adding both components of <code>gravity</code> and both components of <code>wind</code> on every frame--especially since we know one component of each is zero--seems a bit repetitive and perhaps wasteful. It might be better to store the accumulation of forces in one object then apply it once on every frame. That way, it doesn't matter how many forces are acting on each particle; we just need to know the sum of them. Wait..."the sum of all forces..." sounds rather Newtonian, doesn't it?
+2. 
