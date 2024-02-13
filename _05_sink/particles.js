@@ -1,5 +1,5 @@
 //dependencies
-import { lerp, polarToCartesian, TWO_PI, HALF_PI, QUARTER_PI } from "./lib.js";
+import { lerp, polarToCartesian, cartesianToPolar, TWO_PI, HALF_PI, QUARTER_PI } from "./lib.js";
 
 //settings
 const numParticles = 250;
@@ -21,7 +21,8 @@ const maxForce = 2;
 const particles = [];
 const emitter = { x: undefined, y: undefined };
 let respawn = false;
-const force = {x: 0, y: 0};
+const force = {x: 0, y: 0}; 
+const attractor = { x: undefined, y: undefined };
 
 //setup
 function setupParticles() {
@@ -68,6 +69,11 @@ export function setEmitter({ x, y }) {
     setupParticles();
 }
 
+export function setAttractor({ x, y }) {
+    attractor.x = x;
+    attractor.y = y;
+}
+
 export function hasLiveParticle() {
     for (let p of particles) {
         if (p.life > 0) return true;
@@ -97,6 +103,14 @@ export function update(dt = 1) {
             }
             else if (respawn) resetParticle(p);
             continue;
+        }
+        //attractor
+        if (attractor.x !== undefined && attractor.y !== undefined) {
+            const attraction = cartesianToPolar({x: attractor.x - p.x, y: attractor.y - p.y});
+            attraction.v = Math.max(0.001, Math.min(attraction.v, maxForce));
+            const acc = polarToCartesian(attraction);
+            p.vx += acc.x;
+            p.vy += acc.y;
         }
         //move and accelerate, change opacity, life
         p.vx += force.x;
