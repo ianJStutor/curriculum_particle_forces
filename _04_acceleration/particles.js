@@ -14,18 +14,14 @@ const opacity = 1;
 const minLife = 75;
 const maxLife = 125;
 const color = "white";
-// const gravity = {x: 0, y: 0.15}; /////////////////////
-const minGravity = -2;
-const maxGravity = 2;
-const minWind = -2;
-const maxWind = 2;
+const minForce = -2;
+const maxForce = 2;
 
 //state variables
 const particles = [];
 const emitter = { x: undefined, y: undefined };
 let respawn = false;
-// let wind = {x: 0, y: 0}; /////////////////////
-let force = {x: 0, y: 0}; /////////////////////
+const force = {x: 0, y: 0};
 
 //setup
 function setupParticles() {
@@ -83,9 +79,9 @@ export function setRespawn(bool = true) {
     respawn = bool;
 }
 
-export function addForce(normX, normY) { ///////////////////////////
-    force.x = lerp(minWind, maxWind, normX);
-    force.y = lerp(minGravity, maxGravity, normY);
+export function addForce(normX, normY) {
+    force.x = lerp(minForce, maxForce, normX);
+    force.y = lerp(minForce, maxForce, normY);
 }
 
 //loop functions
