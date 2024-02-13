@@ -1,4 +1,4 @@
-# Particle forces 05: Sink
+# Particle forces 05: Attractor
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
@@ -98,10 +98,42 @@
 
 ### 02 - Strange attractors
 
-??????
-
+1. In <code>particle.js</code>, change the following settings:
+    ```js
+    const minAngle = 0;
+    const maxAngle = TWO_PI;
+    ```
+    We're going back to a burst in all directions rather than the lawn sprinkler
+2. In <code>index.js</code>, change the <code>init</code> function:
+    ```js
+    function init() {
+        setRespawn(true);
+        setEmitter({ x: canvas.width/2, y: canvas.height/2 });
+        setAttractor({ x: canvas.width/2, y: canvas.height/2 });
+        canvas.addEventListener("click", e => {
+            setAttractor(e);
+            setEmitter(e);
+        });
+        update(canvas);
+        requestAnimationFrame(loop);
+    }
+    ```
+    The emitter point and the attraction point are always set to the exact same point, on page load and on click
+3. Running the code at this time produces a bursting particle effect but that each particle slows down and returns to the emitter point. It's a pulsing effect, and clicking around the canvas sends particles flying off, seeking the new attractor point
+4. Consider changing the <code>click</code> event to the following, if a pointer device is being used:
     ```js
     // OPTIONAL:
     canvas.addEventListener("pointerdown", setEmitter);
     canvas.addEventListener("pointerup", setAttractor);
     ```
+    Or to the following, if a touch screen is being used:
+    ```js
+    // OPTIONAL:
+    canvas.addEventListener("touchstart", e => {
+        setEmitter({ x: e.touches[0].clientX, y: e.touches[0].clientY });
+    });
+    canvas.addEventListener("touchend", e => {
+        setAttractor({ x: e.touches[0].clientX, y: e.touches[0].clientY });
+    })
+    ```
+    These versions allow dragging on the screen with the start point designated the emitter point and the release point designated the attractor point
