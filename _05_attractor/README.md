@@ -73,7 +73,7 @@
     ```js
     import { update, draw, setEmitter, setAttractor, hasLiveParticle, setRespawn, addForce } from "./particles.js";
     ```
-    Note that after edits the <code>addForce</code> function will no longer be used. It could be removed from this list, if desired
+    Note that after edits the <code>addForce</code> function is not used in this lesson. It could be removed from this list, if desired, or kept as a reminder for possible use while tinkering
 7. The <code>init</code> function has changed:
     ```js
     function init() {
